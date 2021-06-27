@@ -1,12 +1,26 @@
-//
-// Created by Gil on 6/15/2021.
-//
+// Gil Elbaz 206089690
 
-#ifndef EX4_OS_THREADPOOL_H
-#define EX4_OS_THREADPOOL_H
-#include <pthread.h>
-typedef struct ThreadPool ThreadPool;
+#ifndef __THREAD_POOL__
+#define __THREAD_POOL__
+#include <malloc.h>
+#include "pthread.h"
+#include "osqueue.h"
 
-ThreadPool* tpCreate(int numOfThreads);
-void tpDestroy(ThreadPool* threadPool, int shouldWaitForTasks);
-#endif //EX4_OS_THREADPOOL_H
+typedef struct thread_pool {
+    pthread_mutex_t lock;
+    pthread_cond_t update;
+    pthread_t *threads;
+    OSQueue *queue;
+    int thread_count;
+    int queue_size;
+    int shutdown;
+    int started;
+} ThreadPool;
+
+ThreadPool *tpCreate(int numOfThreads);
+
+void tpDestroy(ThreadPool *threadPool, int shouldWaitForTasks);
+
+int tpInsertTask(ThreadPool *threadPool, void (*computeFunc)(void *), void *param);
+
+#endif
