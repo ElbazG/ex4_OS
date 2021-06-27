@@ -10,6 +10,8 @@ typedef struct {
 
 static void *threadpool_thread(void *threadpool);
 
+int threadpool_free(ThreadPool *pool);
+
 ThreadPool *tpCreate(int numOfThreads) {
     ThreadPool *threadPool;
     int i;
@@ -21,7 +23,9 @@ ThreadPool *tpCreate(int numOfThreads) {
 
     // Initialize mutex
     if (pthread_mutex_init(&(threadPool->lock),NULL)!=0 ||
-    (pthread_cond_init(&threadPool->update,NULL)!=0)|| (threadPool->threads == NULL))
+    (pthread_cond_init(&threadPool->update,NULL)!=0)|| (threadPool->threads == NULL)){
+        goto clean;
+    }
 
     // Check for invalid number of threads or empty
     if (numOfThreads < 0) {
@@ -40,8 +44,13 @@ ThreadPool *tpCreate(int numOfThreads) {
 
     return threadPool;
 
-
+    clean:
+    if (threadPool){
+        threadpool_free(threadPool);
+    }
+    return NULL;
 }
+
 
 void tpDestroy(ThreadPool *threadPool, int shouldWaitForTasks) {
 
