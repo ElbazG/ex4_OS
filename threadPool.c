@@ -2,11 +2,11 @@
 
 #include "threadPool.h"
 
+
 void *function(void *task) {
     ThreadPool *threadPool;
     threadPool = (ThreadPool *) task;
     threadPool->perform_task(task);
-    return NULL;
 }
 
 

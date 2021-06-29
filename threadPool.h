@@ -8,12 +8,12 @@
 #define WORKS 0
 #define START 2
 
-#include <malloc.h>
+
+#include <sys/types.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <memory.h>
 #include <stdio.h>
-#include "pthread.h"
+#include <pthread.h>
 #include "osqueue.h"
 
 typedef struct thread_pool {
@@ -38,6 +38,7 @@ typedef struct thread_pool {
 
 typedef struct {
     void (*func)(void *);
+
     void *args;
 } Job;
 
